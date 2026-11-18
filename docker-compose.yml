@@ -1,0 +1,88 @@
+services:
+  # --- 1. 메인 페이지 세트 (main) ---
+  main_web:
+    build: ./main
+    container_name: main_web
+    environment:
+      CHALLENGE_SECRET: ${CHALLENGE_SECRET:-whz_local_dev_secret_change_me}
+    ports:
+      - "80:80"
+    volumes:
+      - ./main/src:/var/www/html  # 우분투 소스 폴더와 도커 연결
+    depends_on:
+      - db_main
+    networks:
+      - ctf_network
+
+  db_main:
+    image: mysql:5.7
+    container_name: db_main
+    environment:
+      MYSQL_DATABASE: whz
+      MYSQL_USER: web
+      MYSQL_PASSWORD: web
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-whz_local_root}
+    volumes:
+      - ./main/db:/docker-entrypoint-initdb.d
+    networks:
+      - ctf_network
+
+  # --- 2. 쇼핑몰 문제 세트 (shop) ---
+  shop_web:
+    build: ./shop
+    container_name: shop_web
+    environment:
+      CHALLENGE_SECRET: ${CHALLENGE_SECRET:-whz_local_dev_secret_change_me}
+    ports:
+      - "8001:80"
+    volumes:
+      - ./shop/src:/var/www/html  # 우분투 소스 폴더와 도커 연결
+    depends_on:
+      - db_shop
+    networks:
+      - ctf_network
+
+  db_shop:
+    image: mysql:5.7
+    container_name: db_shop
+    environment:
+      MYSQL_DATABASE: whz
+      MYSQL_USER: web
+      MYSQL_PASSWORD: web
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-whz_local_root}
+    volumes:
+      - ./shop/db:/docker-entrypoint-initdb.d
+    networks:
+      - ctf_network
+
+  # --- 3. 게시판 문제 세트 (board) ---
+  board_web:
+    build: ./board
+    container_name: board_web
+    environment:
+      CHALLENGE_SECRET: ${CHALLENGE_SECRET:-whz_local_dev_secret_change_me}
+    ports:
+      - "8002:80"
+    volumes:
+      - ./board/src:/var/www/html  # 우분투 소스 폴더와 도커 연결
+    depends_on:
+      - db_board
+    networks:
+      - ctf_network
+
+  db_board:
+    image: mysql:5.7
+    container_name: db_board
+    environment:
+      MYSQL_DATABASE: whz
+      MYSQL_USER: web
+      MYSQL_PASSWORD: web
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-whz_local_root}
+    volumes:
+      - ./board/db:/docker-entrypoint-initdb.d
+    networks:
+      - ctf_network
+
+networks:
+  ctf_network:
+    driver: bridge

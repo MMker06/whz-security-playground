@@ -1,0 +1,27 @@
+# 환경변수 / 비밀키
+.env
+.env.local
+*.env
+!.env.example
+
+# 로컬 도구 설정
+.claude/
+.vscode/
+.idea/
+
+# 개인정보가 포함된 제출 문서 (실명·학번·연락처)
+*.hwp
+*.hwpx
+*.pptx
+*.zip
+
+# DB 데이터 / 런타임
+mysql_data/
+db_data/
+*.sql.bak
+*.log
+
+# OS
+.DS_Store
+Thumbs.db
+*.swp
